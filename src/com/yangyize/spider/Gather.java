@@ -39,7 +39,7 @@ public class Gather implements Runnable {
         int counter = 0;
         while (counter++ <= 2) { //每个线程提取两个网页
             URL url = disp.getURL();
-            System.out.println("in running: " + ID + " get url: " + url.toString());
+            System.out.println("【Spider】线程: " + ID + "正在运行, url为: " + url.toString());
             String htmlDoc = client.getDocumentAt(url);
 
             //没有获得页面的代码信息，这样就需要删除

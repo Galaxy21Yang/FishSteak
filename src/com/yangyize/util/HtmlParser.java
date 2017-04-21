@@ -59,6 +59,8 @@ public class HtmlParser {
 
     public ArrayList<URL> urlDetector(String htmlDoc) {
         final String patternString = "<[a|A]\\s+href=([^>]*\\s*>)";
+        final String patternUrl = "(http[s]?:\\/\\/([\\w-]+\\.)+[\\w-]+([\\w-./?%&*=]*)([^(.ipa|.apk|.png|.jpg|.jsp|.css|.zip|.rar|.exe)])$)";
+
         Pattern pattern = Pattern.compile(patternString, Pattern.CASE_INSENSITIVE);
 
         ArrayList<URL> allURLs = new ArrayList<URL>();
@@ -75,10 +77,11 @@ public class HtmlParser {
                     continue;
 
                 tempURL = tempURL.substring(0, tempURL.indexOf("\""));
-                if (tempURL.startsWith("http"))
+
+                Pattern urlPattern = Pattern.compile(patternUrl, Pattern.CASE_INSENSITIVE);
+                Matcher urlMatcher = urlPattern.matcher(tempURL);
+                if (urlMatcher.matches())
                     allURLs.add(new URL(tempURL));
-
-
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

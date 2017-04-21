@@ -1,6 +1,7 @@
 package com.yangyize.spider;
 
 import com.yangyize.util.HtmlParser;
+import com.yangyize.util.Configuration;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,10 +10,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
+
 /**
  * 网页分析
  */
 public class WebAnalyzer {
+    private Configuration conf = new Configuration();
     private static final String ENDPAGE = "**************************************************";
 
     public WebAnalyzer() {
@@ -31,7 +34,7 @@ public class WebAnalyzer {
     private void saveDoc(BufferedWriter bfWriter, URL url, String htmlDoc) {
         try {
             // 版本
-            String versionStr = "version:1.0\n";
+            String versionStr = "version:"+ conf.VERSION +"\n";
 
             // URL
             String URLStr = "url:" + url.toString() + "\n";

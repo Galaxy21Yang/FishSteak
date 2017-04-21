@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
- *
  * main
  * <p>
  * 2/24 存在的问题：  1. 爬虫各个线程之间爬到的网页可能出现重复
@@ -39,14 +38,11 @@ public class Spider {
     public static void main(String[] args) {
         ArrayList<URL> urls = new ArrayList<URL>();
         try {
-
             urls.add(new URL("http://www.163.com"));
             urls.add(new URL("http://www.sina.com"));
             urls.add(new URL("http://www.sohu.com"));
             urls.add(new URL("http://www.qq.com"));
             urls.add(new URL("http://www.hao123.com"));
-
-
         } catch (MalformedURLException e) { //URL格式错误异常
             e.printStackTrace();
         }

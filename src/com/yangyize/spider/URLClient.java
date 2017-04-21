@@ -17,7 +17,7 @@ public class URLClient {
     }
 
     public String getDocumentAt(URL url) {
-        System.out.println("In getting document");
+        System.out.println("【Spider】Url: " + url.toString() + "正在保存为文档");
 
         URL hostURL = url;
         StringBuffer document = new StringBuffer();
@@ -31,7 +31,7 @@ public class URLClient {
                     document.append(line + "\n");
             }
         } catch (MalformedURLException e) {
-            System.out.println("Unable to connect to URL:" + url.toString());
+            System.out.println("【Spider】无法连接到URL: " + url.toString());
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
