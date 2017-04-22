@@ -45,7 +45,6 @@ public class testHtmlParse {
 
     private static String readRawContent(BufferedReader bfReader) {
         StringBuffer strBuffer = new StringBuffer();
-
         try {
             String word;
             while ((word = bfReader.readLine()) != null) {

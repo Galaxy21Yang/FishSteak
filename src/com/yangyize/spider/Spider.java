@@ -46,6 +46,8 @@ public class Spider {
             urls.add(new URL("http://www.sohu.com"));
             urls.add(new URL("http://www.qq.com"));
             urls.add(new URL("http://www.hao123.com"));
+
+            // 插入到数据库中
             for(URL url : urls){
                 String sqlInsert = " INSERT INTO url_index(url,used) SELECT '" +
                         url.toString()+"','0' " +

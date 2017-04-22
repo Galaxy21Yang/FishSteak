@@ -9,7 +9,7 @@ public class Configuration {
     public Configuration() {}
 
     // 版本
-    public String VERSION = "0.0.2";
+    public String VERSION = "0.0.3";
 
     // Raws文件夹目录
     public String RAWPATH = "Raws/";

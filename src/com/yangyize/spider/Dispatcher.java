@@ -19,8 +19,8 @@ public class Dispatcher {
     }
 
     public synchronized URL getURL() {
-//        while (urls.isEmpty()) {
-        String sqlCount = "select count(*) from url_index where used = 0;";
+        URL url = null;
+        final String sqlCount = "select count(*) from url_index where used = 0;";
         while (dbc.getFirstInteger(sqlCount) <= 0) {
             try {
                 wait(); //等待生产中写入数据
@@ -29,42 +29,40 @@ public class Dispatcher {
             }
         }
 
-        String sqlUnusedUrlRead = "select * from url_index where used = 0 limit 1;";
-        URL url = null;
+        final String sqlUnusedUrlRead = "select * from url_index where used = 0 limit 1;";
+
         try {
             url = new URL(dbc.getFirstString(sqlUnusedUrlRead));
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-//        this.notify();
-//        URL url = urls.get(0);
-//        urls.remove(url);
-//        visitedURLS.add(url);
 
-        String sqlChangeUsed = "update url_index set used=1 where url = '" +
+        final String sqlChangeUsed = "update url_index set used=1 where url = '" +
                 url.toString() + "';";
 
         dbc.executeUpdate(sqlChangeUsed);
-        System.out.println("【Spider】URL已读取");
-        System.out.println("*****"+dbc.getFirstString(sqlUnusedUrlRead));
+        System.out.println("【Spider】URL "+ dbc.getFirstString(sqlUnusedUrlRead)+"已读取");
 
         return url;
     }
 
     public synchronized void insert(URL url) {
-        if (!urls.contains(url) && !visitedURLS.contains(url)) {
-            System.out.println("【Spider】添加URL :" + url.toString());
-            urls.add(url);
-
-        }
-        String sqlInsert = " INSERT INTO url_index(url,used) SELECT '" +
+//        if (!urls.contains(url) && !visitedURLS.contains(url)) {
+//            System.out.println("【Spider】添加URL :" + url.toString());
+//            urls.add(url);
+//        }
+//
+        final String sqlInsert = " INSERT INTO url_index(url,used) SELECT '" +
                 url.toString()+"','0' " +
                 "WHERE NOT EXISTS (select * from `url_index` where url = '" +
                 url.toString() +
                 "');";
-        dbc.executeUpdate(sqlInsert);
-        System.out.println("【Spider】executeUpdate() 运行成功！");
-
+        try {
+            dbc.executeUpdate(sqlInsert);
+            System.out.println("【Spider】添加URL : " + url.toString());
+        } catch (Exception e){
+            System.out.println("【Spider】URL : " + url.toString() + "添加失败");
+        }
     }
 
     public synchronized void insert(ArrayList<URL> analyzedURL) {

@@ -25,7 +25,7 @@ public class WebAnalyzer {
      * 抽取web中的url
      */
     public ArrayList<URL> doAnalyzer(BufferedWriter bfWriter, URL url, String htmlDoc) {
-        System.out.println("in doing analyzer ths size of doc is: " + htmlDoc.length());
+        System.out.println("【Spider】 正在分析" + url.toString() + "， 文件大小为：" + htmlDoc.length());
         ArrayList<URL> urlInHtmlDoc = (new HtmlParser()).urlDetector(htmlDoc);
         saveDoc(bfWriter, url, htmlDoc);
         return urlInHtmlDoc;
