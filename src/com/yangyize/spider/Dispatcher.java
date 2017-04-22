@@ -2,6 +2,7 @@ package com.yangyize.spider;
 
 import com.yangyize.util.DBConnection;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -12,14 +13,15 @@ public class Dispatcher {
     private DBConnection dbc = new DBConnection();
     private static ArrayList<URL> urls = new ArrayList<URL>();
     private static ArrayList<URL> visitedURLS = new ArrayList<URL>();
-//    private static ArrayList<URL> unvistedURLS = new ArrayList<URL>();
 
     public Dispatcher(ArrayList<URL> urls) {
         this.urls = urls;
     }
 
     public synchronized URL getURL() {
-        while (urls.isEmpty()) {
+//        while (urls.isEmpty()) {
+        String sqlCount = "select count(*) from url_index where used = 0;";
+        while (dbc.getFirstInteger(sqlCount) <= 0) {
             try {
                 wait(); //等待生产中写入数据
             } catch (InterruptedException e) {
@@ -27,14 +29,24 @@ public class Dispatcher {
             }
         }
 
-        this.notify();
-        URL url = urls.get(0);
-        urls.remove(url);
-        visitedURLS.add(url);
+        String sqlUnusedUrlRead = "select * from url_index where used = 0 limit 1;";
+        URL url = null;
+        try {
+            url = new URL(dbc.getFirstString(sqlUnusedUrlRead));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+//        this.notify();
+//        URL url = urls.get(0);
+//        urls.remove(url);
+//        visitedURLS.add(url);
+
         String sqlChangeUsed = "update url_index set used=1 where url = '" +
                 url.toString() + "';";
+
         dbc.executeUpdate(sqlChangeUsed);
         System.out.println("【Spider】URL已读取");
+        System.out.println("*****"+dbc.getFirstString(sqlUnusedUrlRead));
 
         return url;
     }
@@ -45,16 +57,11 @@ public class Dispatcher {
             urls.add(url);
 
         }
-        String sqlInsert ="CREATE PROCEDURE Temp_Insert()\n" +
-                "BEGIN" +
-                "IF NOT EXISTS (SELECT * FROM url_index \n" +
-                "WHERE url = '" + url.toString()+"'）\n" +
-                "THEN \n" +
-                "INSERT INTO url_index(url) VALUES('" + url + "');\n" +
-                "END IF;\n" +
-                "END;"+
-                "CALL Temp_Insert();"+
-                "DROP PROCEDURE Temp_Insert;";
+        String sqlInsert = " INSERT INTO url_index(url,used) SELECT '" +
+                url.toString()+"','0' " +
+                "WHERE NOT EXISTS (select * from `url_index` where url = '" +
+                url.toString() +
+                "');";
         dbc.executeUpdate(sqlInsert);
         System.out.println("【Spider】executeUpdate() 运行成功！");
 

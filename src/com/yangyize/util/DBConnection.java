@@ -314,4 +314,32 @@ public class DBConnection {
         }
     }
 
+    public String getFirstString(String sql){
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery(sql);
+            if(rs.next()) {
+                return rs.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int getFirstInteger(String sql){
+        ResultSet rs;
+        try {
+            rs = stmt.executeQuery(sql);
+            if(rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
 }

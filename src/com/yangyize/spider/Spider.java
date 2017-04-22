@@ -1,5 +1,7 @@
 package com.yangyize.spider;
 
+import com.yangyize.util.DBConnection;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -11,8 +13,9 @@ import java.util.ArrayList;
  * 2. 单个爬取文件太大
  */
 public class Spider {
+    private static DBConnection dbc = new DBConnection();
     private ArrayList<URL> urls;
-    private int gatherNum = 5; //线程数
+    private int gatherNum = 100; //线程数
 
     public Spider() {
     }
@@ -43,6 +46,14 @@ public class Spider {
             urls.add(new URL("http://www.sohu.com"));
             urls.add(new URL("http://www.qq.com"));
             urls.add(new URL("http://www.hao123.com"));
+            for(URL url : urls){
+                String sqlInsert = " INSERT INTO url_index(url,used) SELECT '" +
+                        url.toString()+"','0' " +
+                        "WHERE NOT EXISTS (select * from `url_index` where url = '" +
+                        url.toString() +
+                        "');";
+                dbc.executeUpdate(sqlInsert);
+            }
         } catch (MalformedURLException e) { //URL格式错误异常
             e.printStackTrace();
         }
